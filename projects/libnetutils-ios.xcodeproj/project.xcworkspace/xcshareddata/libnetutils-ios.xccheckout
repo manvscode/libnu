@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>IDESourceControlProjectFavoriteDictionaryKey</key>
+	<false/>
+	<key>IDESourceControlProjectIdentifier</key>
+	<string>DB2A5593-E2C5-408A-BA65-6584781ABE01</string>
+	<key>IDESourceControlProjectName</key>
+	<string>libnetutils-ios</string>
+	<key>IDESourceControlProjectOriginsDictionary</key>
+	<dict>
+		<key>E927D35E-98A3-4B88-8A6B-D95B54C43378</key>
+		<string>ssh://bitbucket.org/manvscode/libnetutils.git</string>
+	</dict>
+	<key>IDESourceControlProjectPath</key>
+	<string>libnetutils-ios/libnetutils-ios.xcodeproj/project.xcworkspace</string>
+	<key>IDESourceControlProjectRelativeInstallPathDictionary</key>
+	<dict>
+		<key>E927D35E-98A3-4B88-8A6B-D95B54C43378</key>
+		<string>../../..</string>
+	</dict>
+	<key>IDESourceControlProjectURL</key>
+	<string>ssh://bitbucket.org/manvscode/libnetutils.git</string>
+	<key>IDESourceControlProjectVersion</key>
+	<integer>110</integer>
+	<key>IDESourceControlProjectWCCIdentifier</key>
+	<string>E927D35E-98A3-4B88-8A6B-D95B54C43378</string>
+	<key>IDESourceControlProjectWCConfigurations</key>
+	<array>
+		<dict>
+			<key>IDESourceControlRepositoryExtensionIdentifierKey</key>
+			<string>public.vcs.git</string>
+			<key>IDESourceControlWCCIdentifierKey</key>
+			<string>E927D35E-98A3-4B88-8A6B-D95B54C43378</string>
+			<key>IDESourceControlWCCName</key>
+			<string>libnetutils</string>
+		</dict>
+	</array>
+</dict>
+</plist>

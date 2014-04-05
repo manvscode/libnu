@@ -5,9 +5,12 @@ AM_CXXFLAGS = -std=c++0x -pg -g -ggdb -O0 -I$(top_builddir)/src/ -I. -I.. -I/usr
 LDADD = -lm 
 
 bin_PROGRAMS = \
+$(top_builddir)/bin/test-icmp-echo \
 $(top_builddir)/bin/test-ping \
 $(top_builddir)/bin/test-traceroute
 
+__top_builddir__bin_test_icmp_echo_SOURCES     = test-icmp-echo.c
+__top_builddir__bin_test_icmp_echo_LDFLAGS     = -lm $(top_builddir)/lib/libnetutils.la
 __top_builddir__bin_test_ping_SOURCES          = test-ping.c
 __top_builddir__bin_test_ping_LDFLAGS          = -lm $(top_builddir)/lib/libnetutils.la
 __top_builddir__bin_test_traceroute_SOURCES    = test-traceroute.c

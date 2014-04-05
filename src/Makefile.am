@@ -1,5 +1,5 @@
 # Add new files in alphabetical order. Thanks.
-libnetutils_src = netutils.c icmp.c
+libnetutils_src = netutils.c icmp.c ping.c send.c recv.c
 
 # Add new files in alphabetical order. Thanks.
 libnetutils_headers = netutils.h 

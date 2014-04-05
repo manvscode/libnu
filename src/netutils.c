@@ -53,7 +53,7 @@ void print_ip_header( struct ip *ip )
 	(void)putchar('\n');
 }
 
-bool netutils_resolve_hostname( const char* hostname, struct in_addr* ip )
+bool nu_resolve_hostname( const char* hostname, struct in_addr* ip )
 {
 	struct hostent* host = gethostbyname( hostname );
 
@@ -68,18 +68,18 @@ bool netutils_resolve_hostname( const char* hostname, struct in_addr* ip )
 
 //struct hostent	*gethostbyaddr(const void *, socklen_t, int);
 
-bool netutils_address_from_ip_string( const char* ipstr, struct in_addr* ip )
+bool nu_address_from_ip_string( const char* ipstr, struct in_addr* ip )
 {
 	assert( ipstr && *ipstr );
 	assert( ip );
-	#if 0
+	#if 1
 	return inet_aton( ipstr, ip );
 	#else
 	return inet_pton( AF_INET, ipstr, &ip ) == 1;
 	#endif
 }
 
-const char* netutils_address_to_string( struct in_addr ip )
+const char* nu_address_to_string( struct in_addr ip )
 {
 	#if 0
 	return inet_ntoa( ip );
@@ -89,12 +89,12 @@ const char* netutils_address_to_string( struct in_addr ip )
 	#endif
 }
 
-void netutils_address_to_string_r( struct in_addr ip, char* str, size_t str_size )
+void nu_address_to_string_r( struct in_addr ip, char* str, size_t str_size )
 {
 	inet_ntop( AF_INET, &ip, str, str_size );
 }
 
-void netutils_set_ipaddress( struct sockaddr_in* addr, struct in_addr ip, uint16_t port )
+void nu_set_ipaddress( struct sockaddr_in* addr, struct in_addr ip, uint16_t port )
 {
 	memset( addr, 0, sizeof(struct sockaddr_in) );
 	addr->sin_family = AF_INET;
@@ -102,7 +102,7 @@ void netutils_set_ipaddress( struct sockaddr_in* addr, struct in_addr ip, uint16
 	addr->sin_port   = htons( port );
 }
 
-uint16_t netutils_checksum( const void* data, size_t len )
+uint16_t nu_checksum( const void* data, size_t len )
 {
 	int nleft, sum;
 	uint16_t *w;
@@ -140,7 +140,42 @@ uint16_t netutils_checksum( const void* data, size_t len )
 	return answer;
 }
 
-packet_t* netutils_packet_create( uint8_t protocol, struct in_addr ip_src, struct in_addr ip_dst, size_t payload_size )
+bool nu_set_include_header( int socket, bool include_header )
+{
+	const int on = include_header;
+	return setsockopt( socket, IPPROTO_IP, IP_HDRINCL, &on, sizeof(on) ) == 0;
+}
+
+bool nu_set_timeout( int socket, uint32_t timeout )
+{
+	const struct timeval opt_timeout = { .tv_sec = (timeout / 1000), .tv_usec = (timeout % 1000) * 1000 };
+	return setsockopt( socket, SOL_SOCKET, SO_RCVTIMEO, &opt_timeout, sizeof(opt_timeout) ) == 0;
+}
+
+#ifdef IP_TTL
+bool nu_set_ttl( int socket, uint8_t ttl /* max = MAXTTL */ )
+{
+	const int option_ttl = ttl;
+	return setsockopt( socket, IPPROTO_IP, IP_TTL /*IPV6_UNICAST_HOPS*/, &option_ttl, sizeof(option_ttl) ) == 0;
+}
+uint8_t nu_get_ttl( int socket )
+{
+	int option_ttl = 0;
+	socklen_t option_size = 0;
+
+	if( getsockopt( socket, IPPROTO_IP, IP_TTL, &option_ttl, &option_size ) < 0 )
+	{
+		perror( "ERROR" );
+		option_ttl = 0;
+	}
+
+	return option_ttl;
+}
+#else
+#error "Not socket option IP_TTL.  Need a way to set the TTL."
+#endif
+
+packet_t* nu_packet_create( uint8_t protocol, struct in_addr ip_src, struct in_addr ip_dst, size_t payload_size )
 {
 	size_t packet_size = sizeof(packet_t) + payload_size;
 	packet_t* packet   = (packet_t*) malloc( packet_size );
@@ -190,26 +225,40 @@ packet_t* netutils_packet_create( uint8_t protocol, struct in_addr ip_src, struc
 			packet->ip_header.ip_src = ip_src;
 			packet->ip_header.ip_dst = ip_dst;
 			packet->ip_header.ip_sum = 0; /* IPv4 header checksum (16 bits): set to 0 when calculating checksum */
-			packet->ip_header.ip_sum = netutils_checksum( &packet->ip_header, NETUTILS_IP4_HDRLEN );
-
-			#if defined(DEBUG_NETUTILS)
-			print_ip_header( &packet->ip_header );
-			#endif
+			//packet->ip_header.ip_sum = nu_checksum( &packet->ip_header, NETUTILS_IP4_HDRLEN + payload_size );
 		}
 
 		trace( "Packet created [proto = %u, ", protocol );
-		trace( "src = %s, ", netutils_address_to_string(ip_src) );
-		trace( "dst = %s].\n", netutils_address_to_string(ip_dst) );
+		trace( "src = %s, ", nu_address_to_string(ip_src) );
+		trace( "dst = %s].\n", nu_address_to_string(ip_dst) );
 	}
 	else
 	{
+		#if defined(DEBUG_NETUTILS)
 		perror( "ERROR" );
+		#endif
 	}
 
 	return packet;
 }
 
-void netutils_packet_destroy( packet_t** p_packet )
+packet_t* nu_packet_create_from_buf( const void* buffer, size_t buffer_size )
+{
+	packet_t* packet = (packet_t*) malloc( buffer_size );
+
+	if( packet )
+	{
+		memcpy( packet, buffer, buffer_size );
+
+		trace( "Packet created [proto = %u, ", packet->ip_header.ip_p );
+		trace( "src = %s, ", nu_address_to_string(packet->ip_header.ip_src) );
+		trace( "dst = %s].\n", nu_address_to_string(packet->ip_header.ip_dst) );
+	}
+
+	return packet;
+}
+
+void nu_packet_destroy( packet_t** p_packet )
 {
 	if( p_packet )
 	{
@@ -221,8 +270,9 @@ void netutils_packet_destroy( packet_t** p_packet )
 }
 
 
-void netutils_packet_recalc_checksum( packet_t* packet, size_t payload_size )
+void nu_packet_recalc_checksum( packet_t* packet, size_t payload_size )
 {
 	packet->ip_header.ip_sum = 0;
-	packet->ip_header.ip_sum = netutils_checksum( &packet->ip_header, NETUTILS_IP4_HDRLEN + payload_size );
+	packet->ip_header.ip_sum = nu_checksum( &packet->ip_header, NETUTILS_IP4_HDRLEN + payload_size );
 }
+
