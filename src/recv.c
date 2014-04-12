@@ -25,10 +25,10 @@
 
 bool nu_recv( int socket, void* data, size_t size )
 {
-	int rv;
+	ssize_t rv = 0;
 
-	// receive the data...
-	for( size_t recv_bytes = 0, rv = 0; recv_bytes < size; recv_bytes += rv )
+	/* receive the data... */
+	for( size_t recv_bytes = 0; recv_bytes < size; recv_bytes += rv )
 	{
 		rv = recv( socket, data + recv_bytes, size - recv_bytes, 0 );
 
