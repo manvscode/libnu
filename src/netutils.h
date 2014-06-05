@@ -28,7 +28,7 @@
 #include <sys/socket.h>
 #include <netinet/in.h>
 #include <netinet/ip.h>
-#include <netinet/ip_icmp.h>
+#include <netinet/ip_icmp.h> /* symlink missing headers for iOS */
 #include <netinet/tcp.h>
 #include <netinet/udp.h>
 #include <arpa/inet.h>
@@ -46,8 +46,9 @@
 extern "C" {
 #endif
 
-#define NETUTILS_IP4_HDRLEN               20         /* IPv4 header length */
-#define NETUTILS_ICMP_HDRLEN              ICMP_MINLEN         /* ICMP header length. This is 8. */
+#define NETUTILS_IP4_HDRLEN               20           /* IPv4 header length */
+#define NETUTILS_ICMP_HDRLEN              ICMP_MINLEN  /* ICMP header length. This is 8. */
+#define NETUTILS_UDP_HDRLEN               8            /* UDP header length. */
 #define NETUTILS_MAX_RETRIES              2
 //#define NETUTILS_ICMP_INCLUDE_IP4_HEADER  1
 

@@ -47,7 +47,8 @@ void print_ip_header( struct ip *ip )
 	(void)printf(" %s ", inet_ntoa(*(struct in_addr *)&ip->ip_src.s_addr));
 	(void)printf(" %s ", inet_ntoa(*(struct in_addr *)&ip->ip_dst.s_addr));
 	/* dump any option bytes */
-	while (hlen-- > 20) {
+	while (hlen-- > 20)
+	{
 		(void)printf("%02x", *cp++);
 	}
 	(void)putchar('\n');
@@ -91,7 +92,7 @@ const char* nu_address_to_string( struct in_addr ip )
 
 void nu_address_to_string_r( struct in_addr ip, char* str, size_t str_size )
 {
-	inet_ntop( AF_INET, &ip, str, str_size );
+	inet_ntop( AF_INET, &ip, str, (socklen_t) str_size );
 }
 
 void nu_set_ipaddress( struct sockaddr_in* addr, struct in_addr ip, uint16_t port )
@@ -104,7 +105,8 @@ void nu_set_ipaddress( struct sockaddr_in* addr, struct in_addr ip, uint16_t por
 
 uint16_t nu_checksum( const void* data, size_t len )
 {
-	int nleft, sum;
+	size_t nleft;
+	int sum;
 	uint16_t *w;
 	union {
 		uint16_t	us;
