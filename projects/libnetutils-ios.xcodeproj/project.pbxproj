@@ -10,8 +10,6 @@
 		08F39E7518EE7D2F0011E758 /* icmp.c in Sources */ = {isa = PBXBuildFile; fileRef = 08BB309018EE660F009A9E3E /* icmp.c */; };
 		08F39E7618EE7D2F0011E758 /* netutils.c in Sources */ = {isa = PBXBuildFile; fileRef = 08BB309118EE660F009A9E3E /* netutils.c */; };
 		08F39E7818EE7D2F0011E758 /* ping.c in Sources */ = {isa = PBXBuildFile; fileRef = 08BB309318EE660F009A9E3E /* ping.c */; };
-		08F39E7A18EE7D850011E758 /* libm.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 08F39E7918EE7D850011E758 /* libm.dylib */; };
-		08F39E7C18EE7D8D0011E758 /* libc.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 08F39E7B18EE7D8D0011E758 /* libc.dylib */; };
 		08F39ECE18EE916E0011E758 /* netutils.h in Headers */ = {isa = PBXBuildFile; fileRef = 08BB309218EE660F009A9E3E /* netutils.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		08F39ED118EE937F0011E758 /* netutils.h in CopyFiles */ = {isa = PBXBuildFile; fileRef = 08BB309218EE660F009A9E3E /* netutils.h */; };
 /* End PBXBuildFile section */
@@ -35,8 +33,9 @@
 		08BB309218EE660F009A9E3E /* netutils.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = netutils.h; path = ../src/netutils.h; sourceTree = "<group>"; };
 		08BB309318EE660F009A9E3E /* ping.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; name = ping.c; path = ../src/ping.c; sourceTree = "<group>"; };
 		08BB30A218EE6D43009A9E3E /* libnetutils.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libnetutils.a; sourceTree = BUILT_PRODUCTS_DIR; };
-		08F39E7918EE7D850011E758 /* libm.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libm.dylib; path = usr/lib/libm.dylib; sourceTree = SDKROOT; };
-		08F39E7B18EE7D8D0011E758 /* libc.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libc.dylib; path = usr/lib/libc.dylib; sourceTree = SDKROOT; };
+		D89DB34319402F3A004EE1B8 /* libc.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libc.dylib; path = usr/lib/libc.dylib; sourceTree = SDKROOT; };
+		D89DB34519402F41004EE1B8 /* libm.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libm.dylib; path = usr/lib/libm.dylib; sourceTree = SDKROOT; };
+		D8CC4420194032DB007DCAA4 /* libnetutils-shared.dylib */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.dylib"; includeInIndex = 0; path = "libnetutils-shared.dylib"; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -44,8 +43,13 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				08F39E7C18EE7D8D0011E758 /* libc.dylib in Frameworks */,
-				08F39E7A18EE7D850011E758 /* libm.dylib in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		D8CC441D194032DB007DCAA4 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -55,10 +59,7 @@
 		08BB308918EE6528009A9E3E = {
 			isa = PBXGroup;
 			children = (
-				08BB309018EE660F009A9E3E /* icmp.c */,
-				08BB309118EE660F009A9E3E /* netutils.c */,
-				08BB309218EE660F009A9E3E /* netutils.h */,
-				08BB309318EE660F009A9E3E /* ping.c */,
+				D89DB3491940300E004EE1B8 /* Source */,
 				08BB30C818EE6D5C009A9E3E /* Targets */,
 				08BB30A318EE6D43009A9E3E /* Frameworks */,
 			);
@@ -67,8 +68,8 @@
 		08BB30A318EE6D43009A9E3E /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
-				08F39E7B18EE7D8D0011E758 /* libc.dylib */,
-				08F39E7918EE7D850011E758 /* libm.dylib */,
+				D89DB34519402F41004EE1B8 /* libm.dylib */,
+				D89DB34319402F3A004EE1B8 /* libc.dylib */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -76,9 +77,21 @@
 		08BB30C818EE6D5C009A9E3E /* Targets */ = {
 			isa = PBXGroup;
 			children = (
+				D8CC4420194032DB007DCAA4 /* libnetutils-shared.dylib */,
 				08BB30A218EE6D43009A9E3E /* libnetutils.a */,
 			);
 			name = Targets;
+			sourceTree = "<group>";
+		};
+		D89DB3491940300E004EE1B8 /* Source */ = {
+			isa = PBXGroup;
+			children = (
+				08BB309018EE660F009A9E3E /* icmp.c */,
+				08BB309118EE660F009A9E3E /* netutils.c */,
+				08BB309218EE660F009A9E3E /* netutils.h */,
+				08BB309318EE660F009A9E3E /* ping.c */,
+			);
+			name = Source;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -92,12 +105,19 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		D8CC441E194032DB007DCAA4 /* Headers */ = {
+			isa = PBXHeadersBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXHeadersBuildPhase section */
 
 /* Begin PBXNativeTarget section */
-		08BB30A118EE6D43009A9E3E /* netutils */ = {
+		08BB30A118EE6D43009A9E3E /* netutils-static */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 08BB30C218EE6D43009A9E3E /* Build configuration list for PBXNativeTarget "netutils" */;
+			buildConfigurationList = 08BB30C218EE6D43009A9E3E /* Build configuration list for PBXNativeTarget "netutils-static" */;
 			buildPhases = (
 				08BB309E18EE6D43009A9E3E /* Sources */,
 				08BB309F18EE6D43009A9E3E /* Frameworks */,
@@ -108,10 +128,27 @@
 			);
 			dependencies = (
 			);
-			name = netutils;
+			name = "netutils-static";
 			productName = netutils;
 			productReference = 08BB30A218EE6D43009A9E3E /* libnetutils.a */;
 			productType = "com.apple.product-type.library.static";
+		};
+		D8CC441F194032DB007DCAA4 /* netutils-shared */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = D8CC4421194032DB007DCAA4 /* Build configuration list for PBXNativeTarget "netutils-shared" */;
+			buildPhases = (
+				D8CC441C194032DB007DCAA4 /* Sources */,
+				D8CC441D194032DB007DCAA4 /* Frameworks */,
+				D8CC441E194032DB007DCAA4 /* Headers */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = "netutils-shared";
+			productName = netutils;
+			productReference = D8CC4420194032DB007DCAA4 /* libnetutils-shared.dylib */;
+			productType = "com.apple.product-type.library.dynamic";
 		};
 /* End PBXNativeTarget section */
 
@@ -133,7 +170,8 @@
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				08BB30A118EE6D43009A9E3E /* netutils */,
+				08BB30A118EE6D43009A9E3E /* netutils-static */,
+				D8CC441F194032DB007DCAA4 /* netutils-shared */,
 			);
 		};
 /* End PBXProject section */
@@ -146,6 +184,13 @@
 				08F39E7518EE7D2F0011E758 /* icmp.c in Sources */,
 				08F39E7618EE7D2F0011E758 /* netutils.c in Sources */,
 				08F39E7818EE7D2F0011E758 /* ping.c in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		D8CC441C194032DB007DCAA4 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -191,6 +236,8 @@
 				CODE_SIGN_IDENTITY = "iPhone Developer: Joseph Marrero (EJ27V32M7J)";
 				COPY_PHASE_STRIP = NO;
 				DSTROOT = /tmp/netutils.dst;
+				EXECUTABLE_EXTENSION = a;
+				EXECUTABLE_PREFIX = lib;
 				GCC_C_LANGUAGE_STANDARD = gnu99;
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_OPTIMIZATION_LEVEL = 0;
@@ -208,8 +255,8 @@
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				MACH_O_TYPE = staticlib;
 				ONLY_ACTIVE_ARCH = YES;
-				OTHER_LDFLAGS = "-ObjC";
-				PRODUCT_NAME = "$(TARGET_NAME)";
+				OTHER_LDFLAGS = "";
+				PRODUCT_NAME = netutils;
 				SKIP_INSTALL = YES;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
@@ -235,6 +282,8 @@
 				COPY_PHASE_STRIP = YES;
 				DSTROOT = /tmp/netutils.dst;
 				ENABLE_NS_ASSERTIONS = NO;
+				EXECUTABLE_EXTENSION = a;
+				EXECUTABLE_PREFIX = lib;
 				GCC_C_LANGUAGE_STANDARD = gnu99;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
@@ -245,11 +294,86 @@
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				MACH_O_TYPE = staticlib;
 				ONLY_ACTIVE_ARCH = YES;
-				OTHER_LDFLAGS = "-ObjC";
-				PRODUCT_NAME = "$(TARGET_NAME)";
+				OTHER_LDFLAGS = "";
+				PRODUCT_NAME = netutils;
 				SKIP_INSTALL = YES;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
+		D8CC4422194032DB007DCAA4 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				EXECUTABLE_PREFIX = lib;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_ENABLE_OBJC_EXCEPTIONS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 10.9;
+				ONLY_ACTIVE_ARCH = YES;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = macosx;
+			};
+			name = Debug;
+		};
+		D8CC4423194032DB007DCAA4 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = YES;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				EXECUTABLE_PREFIX = lib;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_ENABLE_OBJC_EXCEPTIONS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 10.9;
+				ONLY_ACTIVE_ARCH = YES;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = macosx;
 			};
 			name = Release;
 		};
@@ -265,7 +389,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		08BB30C218EE6D43009A9E3E /* Build configuration list for PBXNativeTarget "netutils" */ = {
+		08BB30C218EE6D43009A9E3E /* Build configuration list for PBXNativeTarget "netutils-static" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				08BB30C318EE6D43009A9E3E /* Debug */,
@@ -273,6 +397,14 @@
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
+		};
+		D8CC4421194032DB007DCAA4 /* Build configuration list for PBXNativeTarget "netutils-shared" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				D8CC4422194032DB007DCAA4 /* Debug */,
+				D8CC4423194032DB007DCAA4 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
 		};
 /* End XCConfigurationList section */
 	};
