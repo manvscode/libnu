@@ -84,31 +84,23 @@ void print_ip_header( struct ip *ip );
 #define trace(...) 
 #endif
 
-typedef struct packet {
-	struct ip ip_header;
-	uint8_t payload[];
-} packet_t;
+struct packet;
+typedef struct packet packet_t;
 
 
-packet_t* nu_packet_create          ( uint8_t protocol, struct in_addr ip_src, struct in_addr ip_dst, size_t payload_size );
-packet_t* nu_packet_create_from_buf ( const void* buffer, size_t buffer_size );
-void      nu_packet_destroy         ( packet_t** p_packet );
-void      nu_packet_recalc_checksum ( packet_t* packet, size_t payload_size );
+packet_t*        nu_packet_create          ( uint8_t protocol, struct in_addr ip_src, struct in_addr ip_dst, size_t payload_size );
+packet_t*        nu_packet_create_from_buf ( const void* buffer, size_t buffer_size );
+void             nu_packet_destroy         ( packet_t** p_packet );
+void             nu_packet_recalc_checksum ( packet_t* packet, size_t payload_size );
+const struct ip* nu_packet_ip_header       ( const packet_t* packet );
+size_t           nu_packet_length          ( const packet_t* packet );
 
 
-packet_t* nu_icmp_create           ( uint8_t icmp_type, struct in_addr ip_src, struct in_addr ip_dst, const void* payload, size_t payload_size );
-void      nu_icmp_recalc_checksum  ( packet_t* packet, size_t icmp_payload_size );
-packet_t* nu_icmp_create_echo      ( struct in_addr src, struct in_addr dst, uint8_t ttl /* max = MAXTTL */, uint32_t timeout, double* p_latency );
-
-static inline struct icmp* nu_icmp_header( const packet_t* packet )
-{
-	return (struct icmp*) &packet->payload;
-}
-
-static inline uint8_t* nu_icmp_payload( const packet_t* packet )
-{
-	return (uint8_t*) &packet->payload[ NETUTILS_ICMP_HDRLEN ];
-}
+packet_t*    nu_icmp_create          ( uint8_t icmp_type, struct in_addr ip_src, struct in_addr ip_dst, const void* payload, size_t payload_size );
+void         nu_icmp_recalc_checksum ( packet_t* packet, size_t icmp_payload_size );
+struct icmp* nu_icmp_header          ( const packet_t* packet );
+uint8_t*     nu_icmp_payload         ( const packet_t* packet );
+packet_t*    nu_icmp_create_echo     ( struct in_addr src, struct in_addr dst, uint8_t ttl /* max = MAXTTL */, uint32_t timeout, double* p_latency );
 
 typedef struct ping_stats {
 	double   min;

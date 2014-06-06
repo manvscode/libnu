@@ -12,16 +12,28 @@
 		08F39E7818EE7D2F0011E758 /* ping.c in Sources */ = {isa = PBXBuildFile; fileRef = 08BB309318EE660F009A9E3E /* ping.c */; };
 		08F39ECE18EE916E0011E758 /* netutils.h in Headers */ = {isa = PBXBuildFile; fileRef = 08BB309218EE660F009A9E3E /* netutils.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		08F39ED118EE937F0011E758 /* netutils.h in CopyFiles */ = {isa = PBXBuildFile; fileRef = 08BB309218EE660F009A9E3E /* netutils.h */; };
+		D8B80F89194039E2006ADCF9 /* netutils.h in CopyFiles */ = {isa = PBXBuildFile; fileRef = 08BB309218EE660F009A9E3E /* netutils.h */; };
+		D8B80F8A19403A07006ADCF9 /* netutils.h in Headers */ = {isa = PBXBuildFile; fileRef = 08BB309218EE660F009A9E3E /* netutils.h */; settings = {ATTRIBUTES = (Public, ); }; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
 		08BB30A018EE6D43009A9E3E /* CopyFiles */ = {
 			isa = PBXCopyFilesBuildPhase;
 			buildActionMask = 2147483647;
-			dstPath = "include/$(PRODUCT_NAME)";
+			dstPath = "include/lib$(PRODUCT_NAME)";
 			dstSubfolderSpec = 16;
 			files = (
 				08F39ED118EE937F0011E758 /* netutils.h in CopyFiles */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		D8B80F88194039D6006ADCF9 /* CopyFiles */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "include/lib$(PRODUCT_NAME)";
+			dstSubfolderSpec = 7;
+			files = (
+				D8B80F89194039E2006ADCF9 /* netutils.h in CopyFiles */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -109,6 +121,7 @@
 			isa = PBXHeadersBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				D8B80F8A19403A07006ADCF9 /* netutils.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -140,6 +153,7 @@
 				D8CC441C194032DB007DCAA4 /* Sources */,
 				D8CC441D194032DB007DCAA4 /* Frameworks */,
 				D8CC441E194032DB007DCAA4 /* Headers */,
+				D8B80F88194039D6006ADCF9 /* CopyFiles */,
 			);
 			buildRules = (
 			);
@@ -156,7 +170,7 @@
 		08BB308A18EE6528009A9E3E /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				LastUpgradeCheck = 0510;
+				LastUpgradeCheck = 0600;
 			};
 			buildConfigurationList = 08BB308D18EE6528009A9E3E /* Build configuration list for PBXProject "libnetutils-ios" */;
 			compatibilityVersion = "Xcode 3.2";
@@ -202,6 +216,7 @@
 			buildSettings = {
 				CODE_SIGN_IDENTITY = "";
 				IPHONEOS_DEPLOYMENT_TARGET = 7.1;
+				ONLY_ACTIVE_ARCH = YES;
 				SDKROOT = iphoneos;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
@@ -318,6 +333,7 @@
 				CLANG_WARN_INT_CONVERSION = YES;
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COMBINE_HIDPI_IMAGES = YES;
 				COPY_PHASE_STRIP = NO;
 				EXECUTABLE_PREFIX = lib;
 				GCC_C_LANGUAGE_STANDARD = gnu99;
@@ -358,6 +374,7 @@
 				CLANG_WARN_INT_CONVERSION = YES;
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COMBINE_HIDPI_IMAGES = YES;
 				COPY_PHASE_STRIP = YES;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				ENABLE_NS_ASSERTIONS = NO;
@@ -405,6 +422,7 @@
 				D8CC4423194032DB007DCAA4 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};

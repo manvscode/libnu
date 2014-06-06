@@ -185,6 +185,7 @@ bool ping( const char* host, uint32_t timeout, uint32_t ttl, uint32_t count )
 	{
 		double latency = 0.0;
 		packet_t* p    = nu_icmp_create_echo( src_ip, dst_ip, ttl, timeout, &latency );
+		const struct ip* ip_header = nu_packet_ip_header( p );
 
 		if( p )
 		{
@@ -207,7 +208,7 @@ bool ping( const char* host, uint32_t timeout, uint32_t ttl, uint32_t count )
 					stats.sum += latency;
 				}
 
-				fprintf( stdout, "Packet %s%06u%s -- Sent %s%02u%s bytes in %s%.2lf%s ms\n", COLOR_CYAN, i, COLOR_END, COLOR_CYAN, ntohs(p->ip_header.ip_len), COLOR_END, color_latency(latency), latency, COLOR_END );
+				fprintf( stdout, "Packet %s%06u%s -- Sent %s%02u%s bytes in %s%.2lf%s ms\n", COLOR_CYAN, i, COLOR_END, COLOR_CYAN, ntohs(ip_header->ip_len), COLOR_END, color_latency(latency), latency, COLOR_END );
 			}
 			else if( icmp_header->icmp_type == ICMP_UNREACH /* ICMP_DEST_UNREACH */ )
 			{

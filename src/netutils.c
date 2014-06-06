@@ -23,6 +23,8 @@
 #include <stdio.h>
 #include <assert.h>
 #include "netutils.h"
+#include "netutils-internal.h"
+
 
 /*
  *	Print an IP header with options.
@@ -278,3 +280,12 @@ void nu_packet_recalc_checksum( packet_t* packet, size_t payload_size )
 	packet->ip_header.ip_sum = nu_checksum( &packet->ip_header, NETUTILS_IP4_HDRLEN + payload_size );
 }
 
+const struct ip* nu_packet_ip_header( const packet_t* packet )
+{
+	return &packet->ip_header;
+}
+
+size_t nu_packet_length( const packet_t* packet )
+{
+	return packet->ip_header.ip_len;
+}

@@ -26,6 +26,7 @@
 #include <errno.h>
 #include <assert.h>
 #include "netutils.h"
+#include "netutils-internal.h"
 
 bool nu_ping( struct in_addr src, struct in_addr dst, uint32_t timeout, uint32_t count, ping_stats_t* stats )
 {

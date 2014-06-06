@@ -25,6 +25,7 @@
 #include <errno.h>
 #include <assert.h>
 #include "netutils.h"
+#include "netutils-internal.h"
 
 packet_t* nu_icmp_create( uint8_t icmp_type, struct in_addr ip_src, struct in_addr ip_dst, const void* icmp_payload, size_t icmp_payload_size )
 {
@@ -73,6 +74,16 @@ void nu_icmp_recalc_checksum( packet_t* packet, size_t icmp_payload_size )
 	icmp_header->icmp_cksum = nu_checksum( packet->payload, ip_payload_size );
 
 	nu_packet_recalc_checksum( packet, ip_payload_size );
+}
+
+struct icmp* nu_icmp_header( const packet_t* packet )
+{
+	return (struct icmp*) &packet->payload;
+}
+
+uint8_t* nu_icmp_payload( const packet_t* packet )
+{
+	return (uint8_t*) &packet->payload[ NETUTILS_ICMP_HDRLEN ];
 }
 
 packet_t* nu_icmp_create_echo( struct in_addr src, struct in_addr dst, uint8_t ttl /* max = MAXTTL */, uint32_t timeout, double* p_latency )
