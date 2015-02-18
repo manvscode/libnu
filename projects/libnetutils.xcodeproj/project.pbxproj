@@ -12,6 +12,10 @@
 		08F39E7818EE7D2F0011E758 /* ping.c in Sources */ = {isa = PBXBuildFile; fileRef = 08BB309318EE660F009A9E3E /* ping.c */; };
 		08F39ECE18EE916E0011E758 /* netutils.h in Headers */ = {isa = PBXBuildFile; fileRef = 08BB309218EE660F009A9E3E /* netutils.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		08F39ED118EE937F0011E758 /* netutils.h in CopyFiles */ = {isa = PBXBuildFile; fileRef = 08BB309218EE660F009A9E3E /* netutils.h */; };
+		D82B2EC51A1009D100EA3AD4 /* icmp.c in Sources */ = {isa = PBXBuildFile; fileRef = 08BB309018EE660F009A9E3E /* icmp.c */; };
+		D82B2EC61A1009D100EA3AD4 /* netutils.c in Sources */ = {isa = PBXBuildFile; fileRef = 08BB309118EE660F009A9E3E /* netutils.c */; };
+		D82B2EC71A1009D100EA3AD4 /* ping.c in Sources */ = {isa = PBXBuildFile; fileRef = 08BB309318EE660F009A9E3E /* ping.c */; };
+		D82B2ECC1A1009D100EA3AD4 /* netutils.h in Headers */ = {isa = PBXBuildFile; fileRef = 08BB309218EE660F009A9E3E /* netutils.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		D8B80F89194039E2006ADCF9 /* netutils.h in CopyFiles */ = {isa = PBXBuildFile; fileRef = 08BB309218EE660F009A9E3E /* netutils.h */; };
 		D8B80F8A19403A07006ADCF9 /* netutils.h in Headers */ = {isa = PBXBuildFile; fileRef = 08BB309218EE660F009A9E3E /* netutils.h */; settings = {ATTRIBUTES = (Public, ); }; };
 /* End PBXBuildFile section */
@@ -45,13 +49,21 @@
 		08BB309218EE660F009A9E3E /* netutils.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = netutils.h; path = ../src/netutils.h; sourceTree = "<group>"; };
 		08BB309318EE660F009A9E3E /* ping.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; name = ping.c; path = ../src/ping.c; sourceTree = "<group>"; };
 		08BB30A218EE6D43009A9E3E /* libnetutils.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libnetutils.a; sourceTree = BUILT_PRODUCTS_DIR; };
+		D82B2ED01A1009D100EA3AD4 /* libnetutils.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libnetutils.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		D89DB34319402F3A004EE1B8 /* libc.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libc.dylib; path = usr/lib/libc.dylib; sourceTree = SDKROOT; };
 		D89DB34519402F41004EE1B8 /* libm.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libm.dylib; path = usr/lib/libm.dylib; sourceTree = SDKROOT; };
-		D8CC4420194032DB007DCAA4 /* libnetutils-shared.dylib */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.dylib"; includeInIndex = 0; path = "libnetutils-shared.dylib"; sourceTree = BUILT_PRODUCTS_DIR; };
+		D8CC4420194032DB007DCAA4 /* libnetutils.a */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.dylib"; includeInIndex = 0; path = libnetutils.a; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
 		08BB309F18EE6D43009A9E3E /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		D82B2EC81A1009D100EA3AD4 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -74,6 +86,7 @@
 				D89DB3491940300E004EE1B8 /* Source */,
 				08BB30C818EE6D5C009A9E3E /* Targets */,
 				08BB30A318EE6D43009A9E3E /* Frameworks */,
+				D82B2ED01A1009D100EA3AD4 /* libnetutils.a */,
 			);
 			sourceTree = "<group>";
 		};
@@ -89,7 +102,7 @@
 		08BB30C818EE6D5C009A9E3E /* Targets */ = {
 			isa = PBXGroup;
 			children = (
-				D8CC4420194032DB007DCAA4 /* libnetutils-shared.dylib */,
+				D8CC4420194032DB007DCAA4 /* libnetutils.a */,
 				08BB30A218EE6D43009A9E3E /* libnetutils.a */,
 			);
 			name = Targets;
@@ -117,6 +130,14 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		D82B2ECB1A1009D100EA3AD4 /* Headers */ = {
+			isa = PBXHeadersBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				D82B2ECC1A1009D100EA3AD4 /* netutils.h in Headers */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		D8CC441E194032DB007DCAA4 /* Headers */ = {
 			isa = PBXHeadersBuildPhase;
 			buildActionMask = 2147483647;
@@ -128,9 +149,9 @@
 /* End PBXHeadersBuildPhase section */
 
 /* Begin PBXNativeTarget section */
-		08BB30A118EE6D43009A9E3E /* netutils-static */ = {
+		08BB30A118EE6D43009A9E3E /* netutils-static-osx */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 08BB30C218EE6D43009A9E3E /* Build configuration list for PBXNativeTarget "netutils-static" */;
+			buildConfigurationList = 08BB30C218EE6D43009A9E3E /* Build configuration list for PBXNativeTarget "netutils-static-osx" */;
 			buildPhases = (
 				08BB309E18EE6D43009A9E3E /* Sources */,
 				08BB309F18EE6D43009A9E3E /* Frameworks */,
@@ -141,14 +162,31 @@
 			);
 			dependencies = (
 			);
-			name = "netutils-static";
+			name = "netutils-static-osx";
 			productName = netutils;
 			productReference = 08BB30A218EE6D43009A9E3E /* libnetutils.a */;
 			productType = "com.apple.product-type.library.static";
 		};
-		D8CC441F194032DB007DCAA4 /* netutils-shared */ = {
+		D82B2EC31A1009D100EA3AD4 /* netutils-static-ios */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = D8CC4421194032DB007DCAA4 /* Build configuration list for PBXNativeTarget "netutils-shared" */;
+			buildConfigurationList = D82B2ECD1A1009D100EA3AD4 /* Build configuration list for PBXNativeTarget "netutils-static-ios" */;
+			buildPhases = (
+				D82B2EC41A1009D100EA3AD4 /* Sources */,
+				D82B2EC81A1009D100EA3AD4 /* Frameworks */,
+				D82B2ECB1A1009D100EA3AD4 /* Headers */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = "netutils-static-ios";
+			productName = netutils;
+			productReference = D82B2ED01A1009D100EA3AD4 /* libnetutils.a */;
+			productType = "com.apple.product-type.library.static";
+		};
+		D8CC441F194032DB007DCAA4 /* netutils-shared-osx */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = D8CC4421194032DB007DCAA4 /* Build configuration list for PBXNativeTarget "netutils-shared-osx" */;
 			buildPhases = (
 				D8CC441C194032DB007DCAA4 /* Sources */,
 				D8CC441D194032DB007DCAA4 /* Frameworks */,
@@ -159,9 +197,9 @@
 			);
 			dependencies = (
 			);
-			name = "netutils-shared";
+			name = "netutils-shared-osx";
 			productName = netutils;
-			productReference = D8CC4420194032DB007DCAA4 /* libnetutils-shared.dylib */;
+			productReference = D8CC4420194032DB007DCAA4 /* libnetutils.a */;
 			productType = "com.apple.product-type.library.dynamic";
 		};
 /* End PBXNativeTarget section */
@@ -170,9 +208,9 @@
 		08BB308A18EE6528009A9E3E /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				LastUpgradeCheck = 0600;
+				LastUpgradeCheck = 0610;
 			};
-			buildConfigurationList = 08BB308D18EE6528009A9E3E /* Build configuration list for PBXProject "libnetutils-ios" */;
+			buildConfigurationList = 08BB308D18EE6528009A9E3E /* Build configuration list for PBXProject "libnetutils" */;
 			compatibilityVersion = "Xcode 3.2";
 			developmentRegion = English;
 			hasScannedForEncodings = 0;
@@ -184,8 +222,9 @@
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				08BB30A118EE6D43009A9E3E /* netutils-static */,
-				D8CC441F194032DB007DCAA4 /* netutils-shared */,
+				08BB30A118EE6D43009A9E3E /* netutils-static-osx */,
+				D8CC441F194032DB007DCAA4 /* netutils-shared-osx */,
+				D82B2EC31A1009D100EA3AD4 /* netutils-static-ios */,
 			);
 		};
 /* End PBXProject section */
@@ -198,6 +237,16 @@
 				08F39E7518EE7D2F0011E758 /* icmp.c in Sources */,
 				08F39E7618EE7D2F0011E758 /* netutils.c in Sources */,
 				08F39E7818EE7D2F0011E758 /* ping.c in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		D82B2EC41A1009D100EA3AD4 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				D82B2EC51A1009D100EA3AD4 /* icmp.c in Sources */,
+				D82B2EC61A1009D100EA3AD4 /* netutils.c in Sources */,
+				D82B2EC71A1009D100EA3AD4 /* ping.c in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -214,10 +263,18 @@
 		08BB308E18EE6528009A9E3E /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				CODE_SIGN_IDENTITY = "";
-				IPHONEOS_DEPLOYMENT_TARGET = 7.1;
+				COPY_PHASE_STRIP = NO;
+				DSTROOT = "/tmp/$(PRODUCT_NAME).dst";
+				EXECUTABLE_EXTENSION = a;
+				EXECUTABLE_PREFIX = lib;
+				GCC_C_LANGUAGE_STANDARD = c99;
+				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
+				MACH_O_TYPE = staticlib;
 				ONLY_ACTIVE_ARCH = YES;
-				SDKROOT = iphoneos;
+				PRODUCT_NAME = netutils;
+				PUBLIC_HEADERS_FOLDER_PATH = "include/lib$(PRODUCT_NAME)";
+				SDKROOT = macosx;
+				SKIP_INSTALL = YES;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Debug;
@@ -225,9 +282,16 @@
 		08BB308F18EE6528009A9E3E /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				CODE_SIGN_IDENTITY = "";
-				IPHONEOS_DEPLOYMENT_TARGET = 7.1;
-				SDKROOT = iphoneos;
+				DSTROOT = "/tmp/$(PRODUCT_NAME).dst";
+				EXECUTABLE_EXTENSION = a;
+				EXECUTABLE_PREFIX = lib;
+				GCC_C_LANGUAGE_STANDARD = c99;
+				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
+				MACH_O_TYPE = staticlib;
+				PRODUCT_NAME = netutils;
+				PUBLIC_HEADERS_FOLDER_PATH = "include/lib$(PRODUCT_NAME)";
+				SDKROOT = macosx;
+				SKIP_INSTALL = YES;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Release;
@@ -236,10 +300,6 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
-				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
-				CLANG_CXX_LIBRARY = "libc++";
-				CLANG_ENABLE_MODULES = YES;
-				CLANG_ENABLE_OBJC_ARC = YES;
 				CLANG_WARN_BOOL_CONVERSION = YES;
 				CLANG_WARN_CONSTANT_CONVERSION = YES;
 				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
@@ -249,14 +309,11 @@
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				CODE_SIGN_IDENTITY = "iPhone Developer: Joseph Marrero (EJ27V32M7J)";
+				COMBINE_HIDPI_IMAGES = YES;
 				COPY_PHASE_STRIP = NO;
 				DSTROOT = /tmp/netutils.dst;
-				EXECUTABLE_EXTENSION = a;
-				EXECUTABLE_PREFIX = lib;
-				GCC_C_LANGUAGE_STANDARD = gnu99;
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_OPTIMIZATION_LEVEL = 0;
-				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREPROCESSOR_DEFINITIONS = (
 					"DEBUG=1",
 					"$(inherited)",
@@ -269,10 +326,6 @@
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				MACH_O_TYPE = staticlib;
-				ONLY_ACTIVE_ARCH = YES;
-				OTHER_LDFLAGS = "";
-				PRODUCT_NAME = netutils;
-				SKIP_INSTALL = YES;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Debug;
@@ -281,10 +334,6 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
-				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
-				CLANG_CXX_LIBRARY = "libc++";
-				CLANG_ENABLE_MODULES = YES;
-				CLANG_ENABLE_OBJC_ARC = YES;
 				CLANG_WARN_BOOL_CONVERSION = YES;
 				CLANG_WARN_CONSTANT_CONVERSION = YES;
 				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
@@ -294,13 +343,10 @@
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				CODE_SIGN_IDENTITY = "iPhone Developer: Joseph Marrero (EJ27V32M7J)";
+				COMBINE_HIDPI_IMAGES = YES;
 				COPY_PHASE_STRIP = YES;
 				DSTROOT = /tmp/netutils.dst;
 				ENABLE_NS_ASSERTIONS = NO;
-				EXECUTABLE_EXTENSION = a;
-				EXECUTABLE_PREFIX = lib;
-				GCC_C_LANGUAGE_STANDARD = gnu99;
-				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
 				GCC_WARN_UNDECLARED_SELECTOR = YES;
@@ -308,11 +354,70 @@
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				MACH_O_TYPE = staticlib;
-				ONLY_ACTIVE_ARCH = YES;
-				OTHER_LDFLAGS = "";
-				PRODUCT_NAME = netutils;
-				SKIP_INSTALL = YES;
 				TARGETED_DEVICE_FAMILY = "1,2";
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
+		D82B2ECE1A1009D100EA3AD4 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				CODE_SIGN_IDENTITY = "iPhone Developer: Joseph Marrero (EJ27V32M7J)";
+				COMBINE_HIDPI_IMAGES = YES;
+				COPY_PHASE_STRIP = NO;
+				DSTROOT = /tmp/netutils.dst;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				MACH_O_TYPE = staticlib;
+				SDKROOT = iphoneos;
+			};
+			name = Debug;
+		};
+		D82B2ECF1A1009D100EA3AD4 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				CODE_SIGN_IDENTITY = "iPhone Developer: Joseph Marrero (EJ27V32M7J)";
+				COMBINE_HIDPI_IMAGES = YES;
+				COPY_PHASE_STRIP = YES;
+				DSTROOT = /tmp/netutils.dst;
+				ENABLE_NS_ASSERTIONS = NO;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				MACH_O_TYPE = staticlib;
+				SDKROOT = iphoneos;
 				VALIDATE_PRODUCT = YES;
 			};
 			name = Release;
@@ -335,7 +440,6 @@
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				COMBINE_HIDPI_IMAGES = YES;
 				COPY_PHASE_STRIP = NO;
-				EXECUTABLE_PREFIX = lib;
 				GCC_C_LANGUAGE_STANDARD = gnu99;
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_ENABLE_OBJC_EXCEPTIONS = YES;
@@ -352,9 +456,6 @@
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				MACOSX_DEPLOYMENT_TARGET = 10.9;
-				ONLY_ACTIVE_ARCH = YES;
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				SDKROOT = macosx;
 			};
 			name = Debug;
 		};
@@ -378,7 +479,6 @@
 				COPY_PHASE_STRIP = YES;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				ENABLE_NS_ASSERTIONS = NO;
-				EXECUTABLE_PREFIX = lib;
 				GCC_C_LANGUAGE_STANDARD = gnu99;
 				GCC_ENABLE_OBJC_EXCEPTIONS = YES;
 				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
@@ -388,16 +488,13 @@
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				MACOSX_DEPLOYMENT_TARGET = 10.9;
-				ONLY_ACTIVE_ARCH = YES;
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				SDKROOT = macosx;
 			};
 			name = Release;
 		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		08BB308D18EE6528009A9E3E /* Build configuration list for PBXProject "libnetutils-ios" */ = {
+		08BB308D18EE6528009A9E3E /* Build configuration list for PBXProject "libnetutils" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				08BB308E18EE6528009A9E3E /* Debug */,
@@ -406,7 +503,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		08BB30C218EE6D43009A9E3E /* Build configuration list for PBXNativeTarget "netutils-static" */ = {
+		08BB30C218EE6D43009A9E3E /* Build configuration list for PBXNativeTarget "netutils-static-osx" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				08BB30C318EE6D43009A9E3E /* Debug */,
@@ -415,7 +512,16 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		D8CC4421194032DB007DCAA4 /* Build configuration list for PBXNativeTarget "netutils-shared" */ = {
+		D82B2ECD1A1009D100EA3AD4 /* Build configuration list for PBXNativeTarget "netutils-static-ios" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				D82B2ECE1A1009D100EA3AD4 /* Debug */,
+				D82B2ECF1A1009D100EA3AD4 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		D8CC4421194032DB007DCAA4 /* Build configuration list for PBXNativeTarget "netutils-shared-osx" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				D8CC4422194032DB007DCAA4 /* Debug */,

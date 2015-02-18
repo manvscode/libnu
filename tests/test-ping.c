@@ -28,9 +28,16 @@ bool ping( const char* host );
 
 int main( int argc, char* argv[] )
 {
-	const char* host  = argv[ 1 ];
+	if( argc >= 2 )
+	{
+		const char* host  = argv[ 1 ];
+		ping( host );
+	}
+	else
+	{
+		fprintf( stdout, "Need an address to ping.\n" );
+	}
 
-	ping( host );
 	return 0;
 }
 
@@ -76,7 +83,7 @@ bool ping( const char* host )
 		fprintf( stdout, "-----------------------------------------------------------------------------------------\n" );
 		fprintf( stdout, "|  Source: %-15s  |  Destination: %-15s                             |\n", src_ip_str, dst_ip_str );
 		fprintf( stdout, "-----------------------------------------------------------------------------------------\n" );
-		fprintf( stdout, "| Timeout: %05u ms             | Min: %08.1lf ms | Max: %08.1lf ms | Avg: %08.1lf ms |\n", timeout, stats.min, stats.max, stats.avg );
+		fprintf( stdout, "| Timeout: %05u ms            | Min: %08.1lf ms | Max: %08.1lf ms | Avg: %08.1lf ms |\n", timeout, stats.min, stats.max, stats.avg );
 		fprintf( stdout, "-----------------------------------------------------------------------------------------\n" );
 		fprintf( stdout, "| Packets Sent: %-14u | Packets Lost: %-14u | Percent Lost: %-6.2lf%%   |\n", stats.count, stats.lost, (stats.lost * 100.0) / stats.count );
 		fprintf( stdout, "-----------------------------------------------------------------------------------------\n" );

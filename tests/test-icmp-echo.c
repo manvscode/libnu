@@ -60,45 +60,62 @@ bool ping  ( const char* host, uint32_t timeout, uint32_t ttl, uint32_t count );
 
 int main( int argc, char* argv[] )
 {
-	const char* host  = argv[ 1 ];
+	int result = 1;
 
-	/* Command line arguments. */
-	for( int arg = 1; arg < argc; arg++ )
+	if( argc >= 2 )
 	{
-		if( !strcmp( argv[ arg ], "--host" ) || !strcmp( argv[ arg ], "-h" ) )
+		/* Command line arguments. */
+		for( int arg = 1; arg < argc; arg++ )
 		{
-			app.host = argv[ ++arg ];
-		}
-		else if( !strcmp( argv[ arg ], "--timeout" ) || !strcmp( argv[ arg ], "-t" ) )
-		{
-			app.timeout = atoi( argv[ ++arg ] );
-		}
-		else if( !strcmp( argv[ arg ], "--ttl" ) || !strcmp( argv[ arg ], "-l" ) )
-		{
-			app.ttl = atoi( argv[ ++arg ] );
-		}
-		else if( !strcmp( argv[ arg ], "--count" ) || !strcmp( argv[ arg ], "-c" ) )
-		{
-			app.count = atoi( argv[ ++arg ] );
-		}
-		else
-		{
-			if( !strcmp( argv[ arg ], "--help" ) || !strcmp( argv[ arg ], "-h" ) )
+			if( !strcmp( argv[ arg ], "--host" ) || !strcmp( argv[ arg ], "-h" ) )
 			{
-				about( argv[ 0 ] );
-				return EXIT_SUCCESS;
+				app.host = argv[ ++arg ];
+			}
+			else if( !strcmp( argv[ arg ], "--timeout" ) || !strcmp( argv[ arg ], "-t" ) )
+			{
+				app.timeout = atoi( argv[ ++arg ] );
+			}
+			else if( !strcmp( argv[ arg ], "--ttl" ) || !strcmp( argv[ arg ], "-l" ) )
+			{
+				app.ttl = atoi( argv[ ++arg ] );
+			}
+			else if( !strcmp( argv[ arg ], "--count" ) || !strcmp( argv[ arg ], "-c" ) )
+			{
+				app.count = atoi( argv[ ++arg ] );
 			}
 			else
 			{
-				about( argv[ 0 ] );
-				return EXIT_FAILURE;
+				if( !strcmp( argv[ arg ], "--help" ) || !strcmp( argv[ arg ], "-h" ) )
+				{
+					about( argv[ 0 ] );
+					return EXIT_SUCCESS;
+				}
+				else
+				{
+					about( argv[ 0 ] );
+					return EXIT_FAILURE;
+				}
 			}
 		}
+
+		if( app.host == NULL )
+		{
+			fprintf( stdout, "Need to have the host address.\n" );
+			about( argv[ 0 ] );
+		}
+		else
+		{
+			result = ping( app.host, app.timeout, app.ttl, app.count ) ?
+				EXIT_SUCCESS :
+				EXIT_FAILURE;
+		}
+	}
+	else
+	{
+		about( argv[ 0 ] );
 	}
 
-	return ping( app.host, app.timeout, app.ttl, app.count ) ?
-	       EXIT_SUCCESS :
-	       EXIT_FAILURE;
+	return result;
 }
 
 void about( const char *prog_name )

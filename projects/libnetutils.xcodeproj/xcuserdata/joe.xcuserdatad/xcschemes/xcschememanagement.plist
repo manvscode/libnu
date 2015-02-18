@@ -4,12 +4,17 @@
 <dict>
 	<key>SchemeUserState</key>
 	<dict>
-		<key>libnetutils.a.xcscheme</key>
+		<key>netutils-shared-osx.xcscheme</key>
 		<dict>
 			<key>orderHint</key>
-			<integer>0</integer>
+			<integer>2</integer>
 		</dict>
-		<key>libnetutils.dylib.xcscheme</key>
+		<key>netutils-static-ios.xcscheme</key>
+		<dict>
+			<key>orderHint</key>
+			<integer>3</integer>
+		</dict>
+		<key>netutils-static-osx.xcscheme</key>
 		<dict>
 			<key>orderHint</key>
 			<integer>1</integer>
@@ -18,6 +23,11 @@
 	<key>SuppressBuildableAutocreation</key>
 	<dict>
 		<key>08BB30A118EE6D43009A9E3E</key>
+		<dict>
+			<key>primary</key>
+			<true/>
+		</dict>
+		<key>D82B2EC31A1009D100EA3AD4</key>
 		<dict>
 			<key>primary</key>
 			<true/>
@@ -38,6 +48,11 @@
 			<true/>
 		</dict>
 		<key>D8CC441F194032DB007DCAA4</key>
+		<dict>
+			<key>primary</key>
+			<true/>
+		</dict>
+		<key>D8E4CA9A1A0FF373006EC55A</key>
 		<dict>
 			<key>primary</key>
 			<true/>

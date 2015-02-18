@@ -60,46 +60,62 @@ bool traceroute ( const char* host, uint32_t timeout, uint32_t ttl, uint32_t cou
 
 int main( int argc, char* argv[] )
 {
-	const char* host  = argv[ 1 ];
+	int result = 1;
 
-	/* Command line arguments. */
-	for( int arg = 1; arg < argc; arg++ )
+	if( argc >= 2 )
 	{
-		if( !strcmp( argv[ arg ], "--host" ) || !strcmp( argv[ arg ], "-h" ) )
+		/* Command line arguments. */
+		for( int arg = 1; arg < argc; arg++ )
 		{
-			app.host = argv[ ++arg ];
-		}
-		else if( !strcmp( argv[ arg ], "--timeout" ) || !strcmp( argv[ arg ], "-t" ) )
-		{
-			app.timeout = atoi( argv[ ++arg ] );
-		}
-		else if( !strcmp( argv[ arg ], "--max-hops" ) || !strcmp( argv[ arg ], "-n" ) )
-		{
-			app.hops = atoi( argv[ ++arg ] );
-		}
-		else if( !strcmp( argv[ arg ], "--count" ) || !strcmp( argv[ arg ], "-c" ) )
-		{
-			app.count = atoi( argv[ ++arg ] );
-		}
-		else
-		{
-			if( !strcmp( argv[ arg ], "--help" ) || !strcmp( argv[ arg ], "-h" ) )
+			if( !strcmp( argv[ arg ], "--host" ) || !strcmp( argv[ arg ], "-h" ) )
 			{
-				about( argv[ 0 ] );
-				return EXIT_SUCCESS;
+				app.host = argv[ ++arg ];
+			}
+			else if( !strcmp( argv[ arg ], "--timeout" ) || !strcmp( argv[ arg ], "-t" ) )
+			{
+				app.timeout = atoi( argv[ ++arg ] );
+			}
+			else if( !strcmp( argv[ arg ], "--max-hops" ) || !strcmp( argv[ arg ], "-n" ) )
+			{
+				app.hops = atoi( argv[ ++arg ] );
+			}
+			else if( !strcmp( argv[ arg ], "--count" ) || !strcmp( argv[ arg ], "-c" ) )
+			{
+				app.count = atoi( argv[ ++arg ] );
 			}
 			else
 			{
-				about( argv[ 0 ] );
-				return EXIT_FAILURE;
+				if( !strcmp( argv[ arg ], "--help" ) || !strcmp( argv[ arg ], "-h" ) )
+				{
+					about( argv[ 0 ] );
+					return EXIT_SUCCESS;
+				}
+				else
+				{
+					about( argv[ 0 ] );
+					return EXIT_FAILURE;
+				}
 			}
 		}
+
+		if( app.host == NULL )
+		{
+			fprintf( stdout, "Need to have the host address.\n" );
+			about( argv[ 0 ] );
+		}
+		else
+		{
+			result = traceroute( app.host, app.timeout, app.hops, app.count ) ?
+				   EXIT_SUCCESS :
+				   EXIT_FAILURE;
+		}
+	}
+	else
+	{
+		about( argv[ 0 ] );
 	}
 
-
-	return traceroute( app.host, app.timeout, app.hops, app.count ) ?
-	       EXIT_SUCCESS :
-	       EXIT_FAILURE;
+	return result;
 }
 
 void about( const char *prog_name )
@@ -240,13 +256,13 @@ bool traceroute( const char* host, uint32_t timeout, uint32_t max_hops, uint32_t
 	char dst_ip_str[ 16 ]  = { '\0' };
 	nu_address_to_string_r( src_ip, src_ip_str, sizeof(src_ip_str) );
 	nu_address_to_string_r( dst_ip, dst_ip_str, sizeof(dst_ip_str) );
-	float percent_lost = (stats.lost * 100.0) / stats.count;
+	//float percent_lost = (stats.lost * 100.0) / stats.count;
 	fprintf( stdout, "-----------------------------------------------------------------------------------------\n" );
-	fprintf( stdout, "|  Source: %s%-15s%s  |  Destination: %s%-15s%s                             |\n", COLOR_CYAN, src_ip_str, COLOR_END, COLOR_CYAN, dst_ip_str, COLOR_END );
+	//fprintf( stdout, "|  Source: %s%-15s%s  |  Destination: %s%-15s%s                             |\n", COLOR_CYAN, src_ip_str, COLOR_END, COLOR_CYAN, dst_ip_str, COLOR_END );
 	fprintf( stdout, "-----------------------------------------------------------------------------------------\n" );
-	fprintf( stdout, "| Timeout: %s%5u%s ms | Max Hops: %s%03u%s | Min: %s%8.1lf%s ms | Max: %s%8.1lf%s ms | Avg: %s%8.1lf%s ms |\n", COLOR_CYAN, timeout, COLOR_END, COLOR_CYAN, max_hops, COLOR_END, COLOR_CYAN, stats.min, COLOR_END, COLOR_CYAN, stats.max, COLOR_END, COLOR_CYAN, stats.avg, COLOR_END );
+	//fprintf( stdout, "| Timeout: %s%5u%s ms | Max Hops: %s%03u%s | Min: %s%8.1lf%s ms | Max: %s%8.1lf%s ms | Avg: %s%8.1lf%s ms |\n", COLOR_CYAN, timeout, COLOR_END, COLOR_CYAN, max_hops, COLOR_END, COLOR_CYAN, stats.min, COLOR_END, COLOR_CYAN, stats.max, COLOR_END, COLOR_CYAN, stats.avg, COLOR_END );
 	fprintf( stdout, "-----------------------------------------------------------------------------------------\n" );
-	fprintf( stdout, "| Packets Sent: %s%-14u%s | Packets Lost: %s%-14u%s | Percent Lost: %s%-6.2lf%%%s   |\n", COLOR_CYAN, stats.count, COLOR_END, stats.lost > 0 ? COLOR_RED : COLOR_GREEN, stats.lost, COLOR_END, color_percentage(percent_lost), percent_lost, COLOR_END );
+	//fprintf( stdout, "| Packets Sent: %s%-14u%s | Packets Lost: %s%-14u%s | Percent Lost: %s%-6.2lf%%%s   |\n", COLOR_CYAN, stats.count, COLOR_END, stats.lost > 0 ? COLOR_RED : COLOR_GREEN, stats.lost, COLOR_END, color_percentage(percent_lost), percent_lost, COLOR_END );
 	fprintf( stdout, "-----------------------------------------------------------------------------------------\n" );
 
 	return true;
