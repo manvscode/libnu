@@ -20,9 +20,6 @@
  */
 #ifndef _NETUTILS_H_
 #define _NETUTILS_H_
-#ifndef __USE_BSD
-#define __USE_BSD
-#endif
 #include <netdb.h>
 #include <sys/types.h>
 #include <sys/socket.h>
