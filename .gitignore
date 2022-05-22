@@ -1,0 +1,48 @@
+# Compiled source code
+*.o
+*.slo
+*.lo
+*.so
+*.lai
+*.la
+*.a
+*.obj
+*.lib
+*.dll
+*.exe
+
+# Log Files
+*.log
+
+
+# Test Programs
+bin
+
+# Generated pkg-config file
+nu.pc
+
+# Autoconf files
+Makefile
+Makefile.in
+aclocal.m4
+configure
+libtool
+compile
+depcomp
+missing
+ar-lib
+ltmain.sh
+install-sh
+autom4te.cache
+config.guess
+config.status
+config.sub
+bin/.libs
+bin/.dirstamp
+lib/.libs
+lib/.dirstamp
+src/.deps
+src/stamp-h1
+tests/.deps
+src/libnu-config.h
+src/libnu-config.h.in

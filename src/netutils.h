@@ -1,4 +1,4 @@
-/* Copyright (C) 2013 by Joseph A. Marrero, http://www.manvscode.com/
+/* Copyright (C) 2013 by Joseph A. Marrero, https://joemarrero.com/
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -35,29 +35,43 @@
 #include <stdbool.h>
 
 #if defined(WIN32) || defined(WIN64)
-#include <windows.h>
+# include <windows.h>
 #else
-#include <unistd.h>
+# include <unistd.h>
 #endif
 #ifdef __cplusplus
 extern "C" {
 #endif
 
-#define NETUTILS_IP4_HDRLEN               20           /* IPv4 header length */
-#define NETUTILS_ICMP_HDRLEN              ICMP_MINLEN  /* ICMP header length. This is 8. */
-#define NETUTILS_UDP_HDRLEN               8            /* UDP header length. */
-#define NETUTILS_MAX_RETRIES              2
-//#define NETUTILS_ICMP_INCLUDE_IP4_HEADER  1
+#define NU_IP4_HDRLEN               20           /* IPv4 header length */
+#define NU_ICMP_HDRLEN              ICMP_MINLEN  /* ICMP header length. This is 8. */
+#define NU_UDP_HDRLEN               8            /* UDP header length. */
+#define NU_MAX_RETRIES              2
+//#define NU_ICMP_INCLUDE_IP4_HEADER  1
 
 typedef enum nu_result {
-	NETUTILS_TRYAGAIN = -1,
-	NETUTILS_FAILED   =  0,
-	NETUTILS_SUCCESS  =  1
+	NU_TRYAGAIN = -1,
+	NU_FAILED   =  0,
+	NU_SUCCESS  =  1
 } nu_result_t;
 
-#define  nu_tcp_socket()          socket( AF_INET, SOCK_STREAM, 0 )
-#define  nu_udp_socket()          socket( AF_INET, SOCK_DGRAM, 0 )
-#define  nu_raw_socket(proto)     socket( AF_INET, SOCK_RAW, proto )
+/*
+ * Create a TCP socket.
+ */
+#define  nu_tcp_socket() socket( AF_INET, SOCK_STREAM, 0 )
+/*
+ * Create a UDP socket.
+ */
+#define  nu_udp_socket() socket( AF_INET, SOCK_DGRAM, 0 )
+
+/*
+ * Create a raw socket.
+ */
+#if __APPLE__
+# define  nu_raw_socket(proto) socket( AF_INET, SOCK_DGRAM, proto )
+#else
+# define  nu_raw_socket(proto) socket( AF_INET, SOCK_RAW, proto )
+#endif
 
 bool        nu_resolve_hostname       ( const char* hostname, struct in_addr* ip );
 bool        nu_address_from_ip_string ( const char* ip_str, struct in_addr* ip );
@@ -73,18 +87,22 @@ bool        nu_send                   ( int socket, const uint8_t* data, size_t 
 nu_result_t nu_send_async             ( int socket, const void* data, size_t size );
 bool        nu_recv                   ( int socket, void* data, size_t size );
 nu_result_t nu_recv_async             ( int socket, void* data, size_t size );
+void        nu_print_ip_header        ( const struct ip *ip );
 
 #if defined(NDEBUG) || defined(DEBUG_NETUTILS)
-void print_ip_header( struct ip *ip );
 #define trace(...) fprintf( stderr, __VA_ARGS__ )
 #else
-#define trace(...) 
+#define trace(...)
 #endif
 
 struct packet;
 typedef struct packet packet_t;
 
 
+/*
+ * Low-level packet functions.  These are used for ICMP echo
+ * and other uses of raw sockets.
+ */
 packet_t*        nu_packet_create          ( uint8_t protocol, struct in_addr ip_src, struct in_addr ip_dst, size_t payload_size );
 packet_t*        nu_packet_create_from_buf ( const void* buffer, size_t buffer_size );
 void             nu_packet_destroy         ( packet_t** p_packet );
@@ -93,11 +111,15 @@ const struct ip* nu_packet_ip_header       ( const packet_t* packet );
 size_t           nu_packet_length          ( const packet_t* packet );
 
 
+/*
+ * Create an ICMP packet.
+ */
 packet_t*    nu_icmp_create          ( uint8_t icmp_type, struct in_addr ip_src, struct in_addr ip_dst, const void* payload, size_t payload_size );
 void         nu_icmp_recalc_checksum ( packet_t* packet, size_t icmp_payload_size );
 struct icmp* nu_icmp_header          ( const packet_t* packet );
 uint8_t*     nu_icmp_payload         ( const packet_t* packet );
-packet_t*    nu_icmp_create_echo     ( struct in_addr src, struct in_addr dst, uint8_t ttl /* max = MAXTTL */, uint32_t timeout, double* p_latency );
+packet_t*    nu_icmp_create_echo     ( struct in_addr src, struct in_addr dst, uint8_t ttl /* max = MAXTTL */, uint32_t timeout,
+                                       const void* echo_payload, size_t echo_payload_size, double* p_latency );
 
 typedef struct ping_stats {
 	double   min;

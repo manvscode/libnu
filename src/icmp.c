@@ -1,5 +1,4 @@
-/* Copyright (C) 2013 by Joseph A. Marrero, http://www.manvscode.com/
- *
+/* Copyright (C) 2013 by Joseph A. Marrero, https://joemarrero.com/ *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
  * in the Software without restriction, including without limitation the rights
@@ -29,7 +28,7 @@
 
 packet_t* nu_icmp_create( uint8_t icmp_type, struct in_addr ip_src, struct in_addr ip_dst, const void* icmp_payload, size_t icmp_payload_size )
 {
-	size_t ip_payload_size = NETUTILS_ICMP_HDRLEN + icmp_payload_size;
+	size_t ip_payload_size = NU_ICMP_HDRLEN + icmp_payload_size;
 	packet_t* packet       = nu_packet_create( IPPROTO_ICMP, ip_src, ip_dst, ip_payload_size );
 
 	if( packet )
@@ -50,7 +49,7 @@ packet_t* nu_icmp_create( uint8_t icmp_type, struct in_addr ip_src, struct in_ad
 			/* Finally, add the ICMP payload. */
 			if( icmp_payload )
 			{
-				memcpy( packet->payload + NETUTILS_ICMP_HDRLEN, icmp_payload, icmp_payload_size );
+				memcpy( packet->payload + NU_ICMP_HDRLEN, icmp_payload, icmp_payload_size );
 			}
 
 			nu_icmp_recalc_checksum( packet, icmp_payload_size );
@@ -67,7 +66,7 @@ packet_t* nu_icmp_create( uint8_t icmp_type, struct in_addr ip_src, struct in_ad
 void nu_icmp_recalc_checksum( packet_t* packet, size_t icmp_payload_size )
 {
 	struct icmp* icmp_header = (struct icmp*) packet->payload;
-	size_t ip_payload_size   = NETUTILS_ICMP_HDRLEN + icmp_payload_size;
+	size_t ip_payload_size   = NU_ICMP_HDRLEN + icmp_payload_size;
 
 	/* Calculate ICMP header checksum */
 	icmp_header->icmp_cksum = 0; /* ICMP header checksum (16 bits): set to 0 when calculating checksum */
@@ -83,21 +82,16 @@ struct icmp* nu_icmp_header( const packet_t* packet )
 
 uint8_t* nu_icmp_payload( const packet_t* packet )
 {
-	return (uint8_t*) &packet->payload[ NETUTILS_ICMP_HDRLEN ];
+	return (uint8_t*) &packet->payload[ NU_ICMP_HDRLEN ];
 }
 
-packet_t* nu_icmp_create_echo( struct in_addr src, struct in_addr dst, uint8_t ttl /* max = MAXTTL */, uint32_t timeout, double* p_latency )
+packet_t* nu_icmp_create_echo( struct in_addr src, struct in_addr dst, uint8_t ttl /* max = MAXTTL */,
+                               uint32_t timeout, const void* echo_payload, size_t echo_payload_size, double* p_latency )
 {
 	packet_t* reply_packet    = NULL;
-	struct timeval* time_sent = NULL;
 	struct protoent* proto    = getprotobyname( "ICMP" );
-	#if __APPLE__
-	int sock                  = socket( AF_INET, SOCK_DGRAM, proto->p_proto );
-	#else
 	int sock                  = nu_raw_socket( proto->p_proto /* IPPROTO_ICMP */ );
-	#endif
-	size_t icmp_payload_size  = sizeof(*time_sent);
-	size_t ip_payload_size    = NETUTILS_ICMP_HDRLEN + icmp_payload_size;
+	size_t ip_payload_size    = NU_ICMP_HDRLEN + echo_payload_size;
 	packet_t* echo_packet     = NULL;
 
 	if( sock < 0 )
@@ -109,9 +103,9 @@ packet_t* nu_icmp_create_echo( struct in_addr src, struct in_addr dst, uint8_t t
 		goto done;
 	}
 
-	echo_packet = nu_icmp_create( ICMP_ECHO, src, dst, NULL, icmp_payload_size );
+	echo_packet = nu_icmp_create( ICMP_ECHO, src, dst, echo_payload, echo_payload_size );
 
-	#ifdef NETUTILS_ICMP_INCLUDE_IP4_HEADER
+	#ifdef NU_ICMP_INCLUDE_IP4_HEADER
 	if( !nu_set_include_header( sock, true ) )
 	{
 		trace( "Unable to set socket option: IP_HDRINCL.\n" );
@@ -151,9 +145,9 @@ packet_t* nu_icmp_create_echo( struct in_addr src, struct in_addr dst, uint8_t t
 	struct sockaddr_in from_addr;
 	socklen_t from_addr_size;
 
-	time_sent = (struct timeval*) &echo_packet->payload[ NETUTILS_ICMP_HDRLEN ];
+	struct timeval time_sent;
 
-	if( gettimeofday( time_sent, NULL ) < 0 )
+	if( gettimeofday( &time_sent, NULL ) < 0 )
 	{
 		#if defined(DEBUG_NETUTILS)
 		perror( "ERROR" );
@@ -161,12 +155,9 @@ packet_t* nu_icmp_create_echo( struct in_addr src, struct in_addr dst, uint8_t t
 		goto done;
 	}
 
-
-	nu_icmp_recalc_checksum( echo_packet, icmp_payload_size );
-
 	/* Send ICMP_ECHO packet. */
-	#ifdef NETUTILS_ICMP_INCLUDE_IP4_HEADER
-	if( sendto( sock, &packet, NETUTILS_IP4_HDRLEN + ip_payload_size, 0, (struct sockaddr *) &dst_addr, sizeof(struct sockaddr) ) < 0 )
+	#ifdef NU_ICMP_INCLUDE_IP4_HEADER
+	if( sendto( sock, &packet, NU_IP4_HDRLEN + ip_payload_size, 0, (struct sockaddr *) &dst_addr, sizeof(struct sockaddr) ) < 0 )
 	#else
 	if( sendto( sock, &echo_packet->payload, ip_payload_size, 0, (struct sockaddr *) &dst_addr, sizeof(struct sockaddr) ) < 0 )
 	#endif
@@ -182,7 +173,6 @@ packet_t* nu_icmp_create_echo( struct in_addr src, struct in_addr dst, uint8_t t
 		#if defined(DEBUG_NETUTILS)
 		struct icmp* icmp_header = (struct icmp*) echo_packet->payload;
 		trace( "Sent packet [icmp_type = %u].\n", icmp_header->icmp_type );
-		//print_ip_header( &echo_packet->ip_header );
 		#endif
 	}
 
@@ -198,13 +188,13 @@ packet_t* nu_icmp_create_echo( struct in_addr src, struct in_addr dst, uint8_t t
 	}
 	else
 	{
-		reply_packet                  = nu_packet_create_from_buf( recv_packet_buffer, bytes_read );
+		reply_packet = nu_packet_create_from_buf( recv_packet_buffer, bytes_read );
 		struct icmp* recv_icmp_header = (struct icmp*) reply_packet->payload;
 
-		if( recv_icmp_header->icmp_type == ICMP_ECHOREPLY )
+		if( recv_icmp_header->icmp_type == ICMP_ECHOREPLY ||
+            recv_icmp_header->icmp_type == ICMP_UNREACH ||
+            recv_icmp_header->icmp_type == ICMP_TIMXCEED )
 		{
-			time_sent = (struct timeval*) &reply_packet->payload[ NETUTILS_ICMP_HDRLEN ];
-
 			struct timeval now = { .tv_sec = 0, .tv_usec = 0 };
 			if( gettimeofday( &now, NULL ) < 0 )
 			{
@@ -214,13 +204,11 @@ packet_t* nu_icmp_create_echo( struct in_addr src, struct in_addr dst, uint8_t t
 				goto done;
 			}
 
-			*p_latency = 1000 * (now.tv_sec - time_sent->tv_sec) + (now.tv_usec - time_sent->tv_usec) / 1000.0;
-
+			*p_latency = 1000 * (now.tv_sec - time_sent.tv_sec) + (now.tv_usec - time_sent.tv_usec) / 1000.0;
 
 			#if defined(DEBUG_NETUTILS)
 			struct icmp* icmp_header = (struct icmp*) reply_packet->payload;
 			trace( "Received packet [icmp_type = %u, icmp_code = %u, latency = %lf].\n", icmp_header->icmp_type, icmp_header->icmp_code, *p_latency );
-			//print_ip_header( &reply_packet->ip_header );
 			#endif
 		}
 		else

@@ -1,4 +1,4 @@
-/* Copyright (C) 2013 by Joseph A. Marrero, http://www.manvscode.com/
+/* Copyright (C) 2013 by Joseph A. Marrero, https://joemarrero.com/
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -33,13 +33,9 @@ bool nu_ping( struct in_addr src, struct in_addr dst, uint32_t timeout, uint32_t
 	bool result               = false;
 	struct timeval* time_sent = NULL;
 	struct protoent* proto    = getprotobyname( "ICMP" );
-	#if __APPLE__
-	int sock = socket( AF_INET, SOCK_DGRAM, proto->p_proto );
-	#else
 	int sock                  = nu_raw_socket( proto->p_proto /* IPPROTO_ICMP */ );
-	#endif
 	size_t icmp_payload_size  = sizeof(*time_sent);
-	size_t ip_payload_size    = NETUTILS_ICMP_HDRLEN + icmp_payload_size;
+	size_t ip_payload_size    = NU_ICMP_HDRLEN + icmp_payload_size;
 
 	if( sock < 0 )
 	{
@@ -53,7 +49,7 @@ bool nu_ping( struct in_addr src, struct in_addr dst, uint32_t timeout, uint32_t
 	packet_t* packet = nu_icmp_create( ICMP_ECHO, src, dst, NULL, icmp_payload_size );
 
 
-	#ifdef NETUTILS_ICMP_INCLUDE_IP4_HEADER
+	#ifdef NU_ICMP_INCLUDE_IP4_HEADER
 	if( !nu_set_include_header( sock, true ) )
 	{
 		trace( "Unable to set socket option: IP_HDRINCL.\n" );
@@ -106,7 +102,7 @@ bool nu_ping( struct in_addr src, struct in_addr dst, uint32_t timeout, uint32_t
 
 	while( count-- )
 	{
-		time_sent = (struct timeval*) &packet->payload[ NETUTILS_ICMP_HDRLEN ];
+		time_sent = (struct timeval*) &packet->payload[ NU_ICMP_HDRLEN ];
 
 		if( gettimeofday( time_sent, NULL ) < 0 )
 		{
@@ -120,8 +116,8 @@ bool nu_ping( struct in_addr src, struct in_addr dst, uint32_t timeout, uint32_t
 		nu_icmp_recalc_checksum( packet, icmp_payload_size );
 
 		/* Send ICMP_ECHO packet. */
-		#ifdef NETUTILS_ICMP_INCLUDE_IP4_HEADER
-		if( sendto( sock, &packet, NETUTILS_IP4_HDRLEN + ip_payload_size, 0, (struct sockaddr *) &dst_addr, sizeof(struct sockaddr) ) < 0 )
+		#ifdef NU_ICMP_INCLUDE_IP4_HEADER
+		if( sendto( sock, &packet, NU_IP4_HDRLEN + ip_payload_size, 0, (struct sockaddr *) &dst_addr, sizeof(struct sockaddr) ) < 0 )
 		#else
 		if( sendto( sock, &packet->payload, ip_payload_size, 0, (struct sockaddr *) &dst_addr, sizeof(struct sockaddr) ) < 0 )
 		#endif
@@ -163,7 +159,7 @@ bool nu_ping( struct in_addr src, struct in_addr dst, uint32_t timeout, uint32_t
 
 			if( recv_icmp_header->icmp_type == ICMP_ECHOREPLY )
 			{
-				time_sent = (struct timeval*) &recv_packet->payload[ NETUTILS_ICMP_HDRLEN ];
+				time_sent = (struct timeval*) &recv_packet->payload[ NU_ICMP_HDRLEN ];
 
 				struct timeval now = { .tv_sec = 0, .tv_usec = 0 };
 				if( gettimeofday( &now, NULL ) < 0 )

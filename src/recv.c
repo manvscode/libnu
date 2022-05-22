@@ -1,4 +1,4 @@
-/* Copyright (C) 2013 by Joseph A. Marrero, http://www.manvscode.com/
+/* Copyright (C) 2013 by Joseph A. Marrero, https://joemarrero.com/
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -39,7 +39,7 @@ bool nu_recv( int socket, void* data, size_t size )
 		}
 		else if( rv == 0 )
 		{
-			/* connection closed by peer */
+			/* tcp connection closed by peer */
 			return false;
 		}
 	}
@@ -55,7 +55,7 @@ nu_result_t nu_recv_async( int socket, void* data, size_t size )
 		{
 			case EINTR: // interrupted by signal...
 			case EAGAIN: // EWOULDBLOCK
-				return NETUTILS_TRYAGAIN;
+				return NU_TRYAGAIN;
 			case ENOTSOCK: // client socket is not a socket.
 			case ENOTCONN: // not connected yet.
 			case EINVAL: // invalid argument passed.
@@ -64,9 +64,9 @@ nu_result_t nu_recv_async( int socket, void* data, size_t size )
 				assert( false ); // these are programming errors
 			case ECONNREFUSED:
 			default:
-				return NETUTILS_FAILED;
+				return NU_FAILED;
 		}
     }
 
-    return NETUTILS_SUCCESS;
+    return NU_SUCCESS;
 }

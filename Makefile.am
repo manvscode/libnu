@@ -1,5 +1,6 @@
-SUBDIRS = src tests
-
+SUBDIRS = src examples
+pkgconfigdir = $(libdir)/pkgconfig
+pkgconfig_DATA = nu.pc
 
 Android.mk: Makefile.am
 	@androgenizer -:PROJECT libnetutils \

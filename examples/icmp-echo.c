@@ -1,4 +1,4 @@
-/* Copyright (C) 2013 by Joseph A. Marrero, http://www.manvscode.com/
+/* Copyright (C) 2013 by Joseph A. Marrero, https://joemarrero.com/
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -45,18 +45,18 @@
 struct {
 	char* host;
 	uint32_t timeout;
-	uint32_t hops;
+	uint32_t ttl;
 	uint32_t count;
 } app = {
 	.host    = NULL,
 	.timeout = 200,
-	.hops    = IPDEFTTL,
+	.ttl     = IPDEFTTL,
 	.count   = 10
 };
 
 
-void about      ( const char *prog_name );
-bool traceroute ( const char* host, uint32_t timeout, uint32_t ttl, uint32_t count );
+void about ( const char *prog_name );
+bool ping  ( const char* host, uint32_t timeout, uint32_t ttl, uint32_t count );
 
 int main( int argc, char* argv[] )
 {
@@ -75,9 +75,9 @@ int main( int argc, char* argv[] )
 			{
 				app.timeout = atoi( argv[ ++arg ] );
 			}
-			else if( !strcmp( argv[ arg ], "--max-hops" ) || !strcmp( argv[ arg ], "-n" ) )
+			else if( !strcmp( argv[ arg ], "--ttl" ) || !strcmp( argv[ arg ], "-l" ) )
 			{
-				app.hops = atoi( argv[ ++arg ] );
+				app.ttl = atoi( argv[ ++arg ] );
 			}
 			else if( !strcmp( argv[ arg ], "--count" ) || !strcmp( argv[ arg ], "-c" ) )
 			{
@@ -105,9 +105,9 @@ int main( int argc, char* argv[] )
 		}
 		else
 		{
-			result = traceroute( app.host, app.timeout, app.hops, app.count ) ?
-				   EXIT_SUCCESS :
-				   EXIT_FAILURE;
+			result = ping( app.host, app.timeout, app.ttl, app.count ) ?
+				EXIT_SUCCESS :
+				EXIT_FAILURE;
 		}
 	}
 	else
@@ -120,9 +120,9 @@ int main( int argc, char* argv[] )
 
 void about( const char *prog_name )
 {
-    printf( "%s -- ICMP Traceroute\n", prog_name );
+    printf( "%s -- ICMP Ping\n", prog_name );
     printf( "Copyright (c) 2014, Joseph Marrero. All rights reserved.\n" );
-    printf( "More information at http://www.manvscode.com/\n\n" );
+    printf( "More information at https://joemarrero.com/\n\n" );
 
     printf( "The syntax is: \n" );
     printf( "%s [OPTIONS]\n\n", prog_name );
@@ -130,7 +130,7 @@ void about( const char *prog_name )
     printf( "Options:\n" );
     printf( "   %-30s  %s\n", "-h, --host <hostname>", "Set the hostname." );
     printf( "   %-30s  %s\n", "-t, --timeout <timeout>", "Set the timeout (in milliseconds)." );
-    printf( "   %-30s  %s\n", "-n, --max-hops <hops>", "Set the max number of hops." );
+    printf( "   %-30s  %s\n", "-l, --ttl <ttl>", "Set the time to live." );
     printf( "   %-30s  %s\n", "-c, --count <count>", "Set the number of ICMP packets to send." );
     printf( "   %-30s  %s\n", "-h, --help", "Display help and copyright information." );
 
@@ -169,7 +169,7 @@ static inline const char* color_percentage( double p )
 	}
 }
 
-bool traceroute( const char* host, uint32_t timeout, uint32_t max_hops, uint32_t count )
+bool ping( const char* host, uint32_t timeout, uint32_t ttl, uint32_t count )
 {
 	struct in_addr src_ip = { .s_addr = INADDR_ANY };
 	struct in_addr dst_ip;
@@ -186,83 +186,78 @@ bool traceroute( const char* host, uint32_t timeout, uint32_t max_hops, uint32_t
 		goto failed;
 	}
 
-	bool is_done = false;
+	char src_ip_str[ 16 ]  = { '\0' };
+	char dst_ip_str[ 16 ]  = { '\0' };
+	bool first_packet = false;
+	ping_stats_t stats = {
+		.min = 0,
+		.max = 0,
+		.sum = 0,
+		.avg = 0,
+		.count = count,
+		.lost = 0
+	};
 
-	for( uint8_t ttl = 1; !is_done && ttl < max_hops; ttl++ )
+	for( uint32_t i = 1; i <= count; i++ )
 	{
-		bool first_packet = false;
-		ping_stats_t stats = {
-			.min = 0,
-			.max = 0,
-			.sum = 0,
-			.avg = 0,
-			.count = count,
-			.lost = 0
-		};
+		double latency = 0.0;
+        const char echo_payload[] = "Yo ho, yo ho, a pirates life for me";
+		packet_t* p    = nu_icmp_create_echo( src_ip, dst_ip, ttl, timeout, echo_payload, sizeof(echo_payload), &latency );
+		const struct ip* ip_header = nu_packet_ip_header( p );
 
-		for( uint32_t i = 1; i <= count; i++ )
+		if( p )
 		{
-			double latency = 0.0;
-			packet_t* p    = nu_icmp_create_echo( src_ip, dst_ip, ttl, timeout, &latency );
-			int s  = socket( AF_INET, SOCK_DGRAM, 0 );
+			struct icmp* icmp_header = nu_icmp_header( p );
 
-			if( p )
+			if( icmp_header->icmp_type == ICMP_ECHOREPLY )
 			{
-				struct icmp* icmp_header = nu_icmp_header( p );
-
-				if( icmp_header->icmp_type == ICMP_ECHOREPLY )
+				if( !first_packet )
 				{
-					if( !first_packet )
-					{
-						stats.min   = latency;
-						stats.max   = latency;
-						stats.avg   = latency;
-						stats.sum   = latency;
-						first_packet = true;
-					}
-					else
-					{
-						stats.min  = fmin( stats.min, latency );
-						stats.max  = fmax( stats.max, latency );
-						stats.sum += latency;
-					}
-
-					//fprintf( stdout, "Packet %s%06u%s -- Sent %s%02u%s bytes in %s%.2lf%s ms\n", COLOR_CYAN, i, COLOR_END, COLOR_CYAN, ntohs(p->ip_header.ip_len), COLOR_END, color_latency(latency), latency, COLOR_END );
+					stats.min   = latency;
+					stats.max   = latency;
+					stats.avg   = latency;
+					stats.sum   = latency;
+					first_packet = true;
 				}
-				else if( icmp_header->icmp_type == ICMP_UNREACH /* ICMP_DEST_UNREACH */ )
+				else
 				{
-					//fprintf( stdout, "Packet %s%06u%s -- %sDestination unreacheable%s\n", COLOR_CYAN, i, COLOR_END, COLOR_RED, COLOR_END );
-
-				}
-				else if( icmp_header->icmp_type == ICMP_TIMXCEED /* ICMP_TIME_EXCEEDED */ )
-				{
-					//fprintf( stdout, "Packet %s%06u%s -- Time exceeded\n", COLOR_CYAN, i, COLOR_END );
-					//fprintf( stdout, "%u --
+					stats.min  = fmin( stats.min, latency );
+					stats.max  = fmax( stats.max, latency );
+					stats.sum += latency;
 				}
 
-				nu_packet_destroy( &p );
+				fprintf( stdout, "Packet %s%06u%s -- Sent %s%02u%s bytes in %s%.2lf%s ms\n", COLOR_CYAN, i, COLOR_END, COLOR_CYAN, ntohs(ip_header->ip_len), COLOR_END, color_latency(latency), latency, COLOR_END );
 			}
-			else
+			else if( icmp_header->icmp_type == ICMP_UNREACH /* ICMP_DEST_UNREACH */ )
 			{
-				fprintf( stdout, "Packet %s%06u%s -- %sLost%s\n", COLOR_CYAN, i, COLOR_END, COLOR_RED, COLOR_END );
-				stats.lost += 1;
+				fprintf( stdout, "Packet %s%06u%s -- %sDestination unreacheable%s\n", COLOR_CYAN, i, COLOR_END, COLOR_RED, COLOR_END );
+
 			}
-		} /* for */
+			else if( icmp_header->icmp_type == ICMP_TIMXCEED /* ICMP_TIME_EXCEEDED */ )
+			{
+				fprintf( stdout, "Packet %s%06u%s -- Time exceeded\n", COLOR_CYAN, i, COLOR_END );
+			}
+
+			nu_packet_destroy( &p );
+		}
+		else
+		{
+			fprintf( stdout, "Packet %s%06u%s -- %sLost%s\n", COLOR_CYAN, i, COLOR_END, COLOR_RED, COLOR_END );
+			stats.lost += 1;
+		}
 	} /* for */
 
 	fprintf( stdout, "\n" );
 
-	char src_ip_str[ 16 ]  = { '\0' };
-	char dst_ip_str[ 16 ]  = { '\0' };
 	nu_address_to_string_r( src_ip, src_ip_str, sizeof(src_ip_str) );
 	nu_address_to_string_r( dst_ip, dst_ip_str, sizeof(dst_ip_str) );
-	//float percent_lost = (stats.lost * 100.0) / stats.count;
+	float percent_lost = (stats.lost * 100.0) / stats.count;
 	fprintf( stdout, "-----------------------------------------------------------------------------------------\n" );
-	//fprintf( stdout, "|  Source: %s%-15s%s  |  Destination: %s%-15s%s                             |\n", COLOR_CYAN, src_ip_str, COLOR_END, COLOR_CYAN, dst_ip_str, COLOR_END );
+	fprintf( stdout, "|  Source: %s%-15s%s  |  Destination: %s%-15s%s                             |\n", COLOR_CYAN, src_ip_str, COLOR_END, COLOR_CYAN, dst_ip_str, COLOR_END );
 	fprintf( stdout, "-----------------------------------------------------------------------------------------\n" );
-	//fprintf( stdout, "| Timeout: %s%5u%s ms | Max Hops: %s%03u%s | Min: %s%8.1lf%s ms | Max: %s%8.1lf%s ms | Avg: %s%8.1lf%s ms |\n", COLOR_CYAN, timeout, COLOR_END, COLOR_CYAN, max_hops, COLOR_END, COLOR_CYAN, stats.min, COLOR_END, COLOR_CYAN, stats.max, COLOR_END, COLOR_CYAN, stats.avg, COLOR_END );
+	fprintf( stdout, "| Timeout: %s%5u%s ms | TTL: %s%03u%s | Min: %s%8.1lf%s ms | Max: %s%8.1lf%s ms | Avg: %s%8.1lf%s ms |\n", COLOR_CYAN, timeout, COLOR_END, COLOR_CYAN, ttl, COLOR_END, COLOR_CYAN, stats.min, COLOR_END, COLOR_CYAN, stats.max, COLOR_END, COLOR_CYAN, stats.avg, COLOR_END );
 	fprintf( stdout, "-----------------------------------------------------------------------------------------\n" );
-	//fprintf( stdout, "| Packets Sent: %s%-14u%s | Packets Lost: %s%-14u%s | Percent Lost: %s%-6.2lf%%%s   |\n", COLOR_CYAN, stats.count, COLOR_END, stats.lost > 0 ? COLOR_RED : COLOR_GREEN, stats.lost, COLOR_END, color_percentage(percent_lost), percent_lost, COLOR_END );
+	fprintf( stdout, "| Packets Sent: %s%-14u%s | Packets Lost: %s%-14u%s | Percent Lost: %s%-6.2lf%%%s   |\n", COLOR_CYAN, stats.count, COLOR_END, stats.lost > 0 ? COLOR_RED : COLOR_GREEN, stats.lost, COLOR_END, color_percentage(percent_lost), percent_lost, COLOR_END );
 	fprintf( stdout, "-----------------------------------------------------------------------------------------\n" );
 
 	return true;

@@ -1,4 +1,4 @@
-/* Copyright (C) 2013 by Joseph A. Marrero, http://www.manvscode.com/
+/* Copyright (C) 2013 by Joseph A. Marrero, https://joemarrero.com/
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -52,7 +52,7 @@ nu_result_t nu_send_async( int socket, const void* data, size_t size )
 		{
 			case EINTR: // interrupted by signal...
 			case EAGAIN: // EWOULDBLOCK
-				return NETUTILS_TRYAGAIN;
+				return NU_TRYAGAIN;
 			case ENOTSOCK: // client socket is not a socket.
 			case ENOTCONN: // not connected yet.
 			case EINVAL: // invalid argument passed.
@@ -63,10 +63,10 @@ nu_result_t nu_send_async( int socket, const void* data, size_t size )
 			case ECONNRESET: // connection reset by peer
 			case ENOMEM: // no memory available
 			default:
-				return NETUTILS_FAILED;
+				return NU_FAILED;
 		}
     }
 
-    return NETUTILS_SUCCESS;
+    return NU_SUCCESS;
 }
 

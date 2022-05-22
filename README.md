@@ -1,12 +1,23 @@
-libnetutils
-=============
+# libnu
 
 A library of network related utility code.
 
+# Building
 
-License
-=============
-    Copyright (C) 2013 by Joseph A. Marrero, http://www.manvscode.com/
+1. autoreconf -i
+2. configure --enable-examples
+3. make
+4. make install
+
+# Examples
+## Ping
+![Ping](images/icmp-echo.gif)
+
+## Traceroute
+![Traceroute](images/traceroute.gif)
+
+# License
+    Copyright (C) 2013 by Joseph A. Marrero, https://joemarrero.com/
     
     Permission is hereby granted, free of charge, to any person obtaining a copy
     of this software and associated documentation files (the "Software"), to deal
